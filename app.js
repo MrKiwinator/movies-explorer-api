@@ -4,6 +4,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { errorHandler } = require('./middlewares/errors-handler');
 
 // creating app
 const app = express();
@@ -28,18 +30,18 @@ mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb', {
 app.use(express.json());
 
 // Request logger (to be inserted b4 all routes):
-// app.use(requestLogger);
+app.use(requestLogger);
 
 // Routes of index page:
-// app.use('/', require('./routes/index'));
+app.use('/', require('./routes/index'));
 
 // Error logger (to be inserted b4 celebrate errors and app error handler):
-// app.use(errorLogger);
+app.use(errorLogger);
 
 app.use(errors());
 
 // App errors handler:
-// app.use(errorHandler);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   // If everything is ok, console will return the listening app port:
