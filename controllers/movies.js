@@ -40,7 +40,7 @@ const createMovie = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при создании карточки'));
+        next(new BadRequestError('Переданы некорректные данные при создании фильма'));
         return;
       }
       next(new InternalError('Произошла ошибка cервера'));
@@ -62,12 +62,12 @@ const deleteMovie = (req, res, next) => {
     .then((movie) => {
       // Check if movie exist:
       if (!movie) {
-        next(new NotFoundError('Передан несуществующий _id карточки'));
+        next(new NotFoundError('Передан _id несуществующего фильма'));
         return;
       }
       // Check if user is owner of movie:
       if (userId !== movie.owner.toString()) {
-        next(new ForbiddenError('Нет доступа к запрашиваемой карточке'));
+        next(new ForbiddenError('Нет доступа к запрашиваемому фильму'));
         return;
       }
       // If movie exist and user it's owner - delete movie:
@@ -79,7 +79,7 @@ const deleteMovie = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Невалидный id карточки'));
+        next(new BadRequestError('Невалидный id фильма'));
         return;
       }
       next(new InternalError('Произошла ошибка cервера'));

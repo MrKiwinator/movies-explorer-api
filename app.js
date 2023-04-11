@@ -6,6 +6,7 @@ const cors = require('cors');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { errorHandler } = require('./middlewares/errors-handler');
+const { limiter } = require('./middlewares/rate-limiter');
 
 // creating app
 const app = express();
@@ -31,6 +32,9 @@ app.use(express.json());
 
 // Request logger (to be inserted b4 all routes):
 app.use(requestLogger);
+
+// Requests limiter (100req per 15min):
+app.use(limiter);
 
 // Routes of index page:
 app.use('/', require('./routes/index'));
