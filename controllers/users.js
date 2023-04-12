@@ -114,6 +114,10 @@ const updateUserInfo = (req, res, next) => {
         next(new BadRequestError('Переданы некорректные данные при редактировании пользователя'));
         return;
       }
+      if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email уже существует'));
+        return;
+      }
       next(new InternalError('Произошла ошибка cервера'));
     });
 };
