@@ -17,7 +17,8 @@ const { PORT = 3000 } = process.env;
 app.use(cors({
   origin: [
     'http://localhost:3001',
-    // frontend domain to be inserted here
+    'http://movies-explorer.nomoredomains.monster',
+    'https://movies-explorer.nomoredomains.monster',
   ],
   credentials: true,
   maxAge: 60,
