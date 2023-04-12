@@ -12,7 +12,7 @@ const { limiter } = require('./middlewares/rate-limiter');
 const app = express();
 
 // listening port 3000
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, DB_ADDRESS } = process.env;
 
 app.use(cors({
   origin: [
@@ -25,7 +25,7 @@ app.use(cors({
 }));
 
 // connecting to the Mongo db
-mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb', {
+mongoose.connect(DB_ADDRESS, {
   useNewUrlParser: true,
 });
 
