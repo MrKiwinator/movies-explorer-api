@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const { celebrate, Joi } = require('celebrate');
 const {
   login,
-  logout,
+  signout,
   createUser,
 } = require('../controllers/users');
 const auth = require('../middlewares/auth');
@@ -26,7 +26,7 @@ router.post('/signin', celebrate({
 }), login);
 
 // Sign-out:
-router.post('/logout', logout);
+router.post('/signout', signout);
 
 // Create user:
 router.post('/signup', celebrate({
