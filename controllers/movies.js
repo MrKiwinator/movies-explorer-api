@@ -1,8 +1,9 @@
 const Movie = require('../models/movie');
-const { BadRequestError } = require('../utils/errors/bad-request');
-const { NotFoundError } = require('../utils/errors/not-found');
-const { ForbiddenError } = require('../utils/errors/forbidden');
-const { InternalError } = require('../utils/errors/internal');
+const { BadRequestError } = require('../utils/errors/constructors/bad-request');
+const { NotFoundError } = require('../utils/errors/constructors/not-found');
+const { ForbiddenError } = require('../utils/errors/constructors/forbidden');
+const { InternalError } = require('../utils/errors/constructors/internal');
+const { errorMessage } = require('../utils/errors/messages');
 
 const createMovie = (req, res, next) => {
   const {
@@ -40,10 +41,10 @@ const createMovie = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при создании фильма'));
+        next(new BadRequestError(errorMessage.movie.badRequest.create));
         return;
       }
-      next(new InternalError('Произошла ошибка cервера'));
+      next(new InternalError(errorMessage.server.internal));
     });
 };
 
@@ -52,7 +53,7 @@ const getUserMovies = (req, res, next) => {
     .then((movies) => {
       res.status(200).send({ movies });
     })
-    .catch(() => next(new InternalError('Произошла ошибка cервера')));
+    .catch(() => next(new InternalError(errorMessage.server.internal)));
 };
 
 const deleteMovie = (req, res, next) => {
@@ -62,12 +63,12 @@ const deleteMovie = (req, res, next) => {
     .then((movie) => {
       // Check if movie exist:
       if (!movie) {
-        next(new NotFoundError('Передан _id несуществующего фильма'));
+        next(new NotFoundError(errorMessage.movie.notFound));
         return;
       }
       // Check if user is owner of movie:
       if (userId !== movie.owner.toString()) {
-        next(new ForbiddenError('Нет доступа к запрашиваемому фильму'));
+        next(new ForbiddenError(errorMessage.movie.forbidden));
         return;
       }
       // If movie exist and user it's owner - delete movie:
@@ -75,14 +76,14 @@ const deleteMovie = (req, res, next) => {
         .then(() => {
           res.status(200).send(movie);
         })
-        .catch(() => new InternalError('Произошла ошибка cервера'));
+        .catch(() => new InternalError(errorMessage.server.internal));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Невалидный id фильма'));
+        next(new BadRequestError(errorMessage.movie.badRequest.delete));
         return;
       }
-      next(new InternalError('Произошла ошибка cервера'));
+      next(new InternalError(errorMessage.server.internal));
     });
 };
 

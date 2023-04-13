@@ -1,13 +1,13 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { BadRequestError } = require('../utils/errors/bad-request');
-const { InternalError } = require('../utils/errors/internal');
-const { NotFoundError } = require('../utils/errors/not-found');
-const { ConflictError } = require('../utils/errors/conflict');
-const { UnauthorizedError } = require('../utils/errors/unauthorized');
-
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET } = require('../config');
+const { BadRequestError } = require('../utils/errors/constructors/bad-request');
+const { InternalError } = require('../utils/errors/constructors/internal');
+const { NotFoundError } = require('../utils/errors/constructors/not-found');
+const { ConflictError } = require('../utils/errors/constructors/conflict');
+const { UnauthorizedError } = require('../utils/errors/constructors/unauthorized');
+const { errorMessage } = require('../utils/errors/messages');
 
 // Create user:
 const createUser = (req, res, next) => {
@@ -27,16 +27,16 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
+        next(new BadRequestError(errorMessage.user.badRequest.create));
         return;
       }
 
       if (err.code === 11000) {
-        next(new ConflictError('Пользователь с таким email уже существует'));
+        next(new ConflictError(errorMessage.user.conflict));
         return;
       }
 
-      next(new InternalError('Произошла ошибка cервера'));
+      next(new InternalError(errorMessage.server.internal));
     });
 };
 
@@ -67,10 +67,10 @@ const login = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'UnauthorizedError') {
-        next(new UnauthorizedError('Неверный логин или пароль'));
+        next(new UnauthorizedError(errorMessage.user.unauthorized));
         return;
       }
-      next(new InternalError('Произошла ошибка cервера'));
+      next(new InternalError(errorMessage.server.internal));
     });
 };
 
@@ -87,13 +87,13 @@ const getCurrentUser = (req, res, next) => {
     .then((user) => {
       // Check if user exist:
       if (!user) {
-        next(new NotFoundError('Пользователь по указанному _id не найден'));
+        next(new NotFoundError(errorMessage.user.notFound));
         return;
       }
       res.status(200).send(user);
     })
     .catch(() => {
-      next(new InternalError('Произошла ошибка cервера'));
+      next(new InternalError(errorMessage.server.internal));
     });
 };
 
@@ -111,14 +111,14 @@ const updateUserInfo = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные при редактировании пользователя'));
+        next(new BadRequestError(errorMessage.user.badRequest.updateInfo));
         return;
       }
       if (err.code === 11000) {
-        next(new ConflictError('Пользователь с таким email уже существует'));
+        next(new ConflictError(errorMessage.user.conflict));
         return;
       }
-      next(new InternalError('Произошла ошибка cервера'));
+      next(new InternalError(errorMessage.server.internal));
     });
 };
 

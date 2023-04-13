@@ -1,18 +1,17 @@
-require('dotenv').config();
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const helmet = require('helmet');
 const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { errorHandler } = require('./middlewares/errors-handler');
 const { limiter } = require('./middlewares/rate-limiter');
+const { PORT, DB_ADDRESS } = require('./config');
 
 // creating app
 const app = express();
 
-// listening port 3000
-const { PORT = 3000, DB_ADDRESS } = process.env;
+app.use(helmet());
 
 app.use(cors({
   origin: [
@@ -48,6 +47,7 @@ app.use(errors());
 // App errors handler:
 app.use(errorHandler);
 
+// Listening port 3000:
 app.listen(PORT, () => {
   // If everything is ok, console will return the listening app port:
   console.log(`App listening on port ${PORT}`);

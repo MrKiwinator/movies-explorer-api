@@ -1,41 +1,24 @@
 const router = require('express').Router();
 
 const cookieParser = require('cookie-parser');
-const { celebrate, Joi } = require('celebrate');
+const {
+  userSigninValidator,
+  userSignupValidator,
+} = require('../middlewares/routes-validation');
 const {
   login,
   signout,
   createUser,
 } = require('../controllers/users');
 const auth = require('../middlewares/auth');
-const { NotFoundError } = require('../utils/errors/not-found');
-
-// Crash-test
-// router.get('/crash-test', () => {
-//   setTimeout(() => {
-//     throw new Error('Сервер сейчас упадёт');
-//   }, 0);
-// });
+const { NotFoundError } = require('../utils/errors/constructors/not-found');
+const { errorMessage } = require('../utils/errors/messages');
 
 // Sign-in:
-router.post('/signin', celebrate({
-  body: {
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
-  },
-}), login);
-
-// Sign-out:
-router.post('/signout', signout);
+router.post('/signin', userSigninValidator, login);
 
 // Create user:
-router.post('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().email().required(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
-  }),
-}), createUser);
+router.post('/signup', userSignupValidator, createUser);
 
 // Authorization middleware:
 router.use(cookieParser()); // to get token from cookie
@@ -49,7 +32,10 @@ router.use('/users', require('./users'));
 // Movies
 router.use('/movies', require('./movies'));
 
+// Sign-out:
+router.post('/signout', signout);
+
 // Other routes:
-router.all('*', (req, res, next) => next(new NotFoundError('Запрашиваемая страница не найдена')));
+router.all('*', (req, res, next) => next(new NotFoundError(errorMessage.page.notFound)));
 
 module.exports = router;

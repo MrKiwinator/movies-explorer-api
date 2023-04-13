@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { errorMessage } = require('../utils/errors/messages');
 
 const movieSchema = new mongoose.Schema({
   country: {
@@ -29,7 +30,7 @@ const movieSchema = new mongoose.Schema({
       validator(v) {
         return validator.isURL(v);
       },
-      message: 'Проверьте правильность ввода ссылки',
+      message: errorMessage.validator.link,
     },
   },
   trailerLink: {
@@ -39,7 +40,7 @@ const movieSchema = new mongoose.Schema({
       validator(v) {
         return validator.isURL(v);
       },
-      message: 'Проверьте правильность ввода ссылки',
+      message: errorMessage.validator.link,
     },
   },
   thumbnail: {
@@ -49,7 +50,7 @@ const movieSchema = new mongoose.Schema({
       validator(v) {
         return validator.isURL(v);
       },
-      message: 'Проверьте правильность ввода ссылки',
+      message: errorMessage.validator.link,
     },
   },
   owner: {
@@ -59,7 +60,7 @@ const movieSchema = new mongoose.Schema({
   },
   // Getting from external source
   movieId: {
-    type: String,
+    type: Number,
     required: true,
   },
   nameRU: {
