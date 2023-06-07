@@ -51,7 +51,7 @@ const createMovie = (req, res, next) => {
 const getUserMovies = (req, res, next) => {
   Movie.find({ owner: req.user._id })
     .then((movies) => {
-      res.status(200).send({ movies });
+      res.status(200).send(movies);
     })
     .catch(() => next(new InternalError(errorMessage.server.internal)));
 };
