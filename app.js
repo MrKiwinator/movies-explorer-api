@@ -19,7 +19,7 @@ app.use(cors({
     'http://movies-explorer.nomoredomains.monster',
     'https://movies-explorer.nomoredomains.monster',
   ],
-  credentials: true,
+  // credentials: true,
   maxAge: 60,
 }));
 

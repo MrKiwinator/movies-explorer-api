@@ -1,6 +1,5 @@
 const router = require('express').Router();
 
-const cookieParser = require('cookie-parser');
 const {
   userSigninValidator,
   userSignupValidator,
@@ -20,7 +19,6 @@ router.post('/signin', userSigninValidator, login);
 router.post('/signup', userSignupValidator, createUser);
 
 // Authorization middleware:
-router.use(cookieParser()); // to get token from cookie
 router.use(auth);
 
 // Routes below are available only after authorization (!)
