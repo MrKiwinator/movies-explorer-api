@@ -53,16 +53,7 @@ const login = (req, res, next) => {
         { expiresIn: '7d' },
       );
       res
-        .cookie('jwt', token, {
-          httpOnly: true,
-          maxAge: 3600000,
-          sameSite: true,
-        })
-        .send({
-          _id: user._id,
-          email: user.email,
-          name: user.name,
-        })
+        .send({ token })
         .end();
     })
     .catch((err) => {
@@ -72,11 +63,6 @@ const login = (req, res, next) => {
       }
       next(new InternalError(errorMessage.server.internal));
     });
-};
-
-// signout
-const signout = (req, res) => {
-  res.clearCookie('jwt').end();
 };
 
 // Get current user:
@@ -125,7 +111,6 @@ const updateUserInfo = (req, res, next) => {
 module.exports = {
   createUser,
   login,
-  signout,
   getCurrentUser,
   updateUserInfo,
 };

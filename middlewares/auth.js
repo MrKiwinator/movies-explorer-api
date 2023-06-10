@@ -5,14 +5,14 @@ const { errorMessage } = require('../utils/errors/messages');
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports = (req, res, next) => {
-  // getting jwt from cookies:
-  const token = req.cookies.jwt;
+  const { authorization } = req.headers;
 
-  if (!token) {
+  if (!authorization || !authorization.startsWith('Bearer ')) {
     next(new UnauthorizedError(errorMessage.auth.unauthorized));
     return;
   }
 
+  const token = authorization.replace('Bearer ', '');
   let payload;
 
   try {

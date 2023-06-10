@@ -7,7 +7,6 @@ const {
 } = require('../middlewares/routes-validation');
 const {
   login,
-  signout,
   createUser,
 } = require('../controllers/users');
 const auth = require('../middlewares/auth');
@@ -31,9 +30,6 @@ router.use('/users', require('./users'));
 
 // Movies
 router.use('/movies', require('./movies'));
-
-// Sign-out:
-router.post('/signout', signout);
 
 // Other routes:
 router.all('*', (req, res, next) => next(new NotFoundError(errorMessage.page.notFound)));
